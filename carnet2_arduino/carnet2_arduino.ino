@@ -40,7 +40,7 @@ void setup() {
     pinMode(rightA, OUTPUT);
     pinMode(rightB, OUTPUT);
 
-    //Ultrasonic Sensor
+    //Ultrasonic Sensor Setup
     pinMode(trigPin, OUTPUT);
     pinMode(echoPin, INPUT);
 
@@ -50,6 +50,7 @@ void setup() {
     digitalWrite(rightA, HIGH);
     digitalWrite(rightB, LOW);
 
+    //Calibrates an initial distance from front to itself
     digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     digitalWrite(trigPin, HIGH);
@@ -63,7 +64,7 @@ void setup() {
 
 void loop() {
 
-  potValue = (analogRead(potentiometer) - 512) / 1024.0;
+  potValue = (analogRead(potentiometer) - 512) / 2048.0;
   
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -95,8 +96,7 @@ void loop() {
    }
 }
 
-//Drive forward
-
+//Move the two corresponding motors forward
 void drive(int speed, int angle){
   analogWrite(enableLeft, (int) (speed - angle* (1.16 - potValue)));
   analogWrite(enableRight, (int) (speed + angle* (1.16 + potValue)));
