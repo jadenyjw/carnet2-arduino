@@ -10,26 +10,25 @@ int leftB = 9;
 int rightA = 12;
 int rightB = 13;
 
-int potentiometer = 2;
+int potentiometer = A2;
 
 int trigPin = 4;
 int echoPin = 5;    
 
 double potValue = 0.0;
 
-long initialDistance;
-long duration, cm;
+double initialDistance;
+double duration, cm;
 
 //Setup software serial
 SoftwareSerial mySerial(2, 3);
-
-
 void setup() {
+  
     //Start serial interface
     Serial.begin(115200);
-    Serial.setTimeout(10);
+    Serial.setTimeout(5);
     mySerial.begin(115200);
-    mySerial.setTimeout(10);
+    mySerial.setTimeout(1);
     
     //Enable pins for motors
     pinMode(enableLeft, OUTPUT);
@@ -60,26 +59,30 @@ void setup() {
     duration = pulseIn(echoPin, HIGH);
     initialDistance = (duration/2) / 29.1;
 
+    potValue = (analogRead(potentiometer) - 512) / 2048.0;
+
 }
 
 void loop() {
 
-  potValue = (analogRead(potentiometer) - 512) / 2048.0;
+ 
+  //digitalWrite(trigPin, LOW);
+  //delayMicroseconds(1);
+  //digitalWrite(trigPin, HIGH);
+  //delayMicroseconds(10);
+  //digitalWrite(trigPin, LOW);
   
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  
-  duration = pulseIn(echoPin, HIGH);
-  cm = (duration/2) / 29.1;
+  //duration = pulseIn(echoPin, HIGH);
+  //cm = (duration/2) / 29.1;
 
   
   //Forever listen to serial from the ESP8266 for actions
-  if ((initialDistance - cm <= 5 && initialDistance - cm >= -10) && mySerial.available()) {
+  boolean noWallorStairs = (initialDistance - cm <= 5 && initialDistance - cm >= -10);
+ 
+  
+  if (mySerial.available()) {
     char input[INPUT_SIZE + 1];
-    byte size = Serial.readBytes(input, INPUT_SIZE);
+    byte size = mySerial.readBytes(input, INPUT_SIZE);
     // Add the final 0 to end the C string
     input[size] = 0;
     char* command = strtok(input, "&");
@@ -87,17 +90,22 @@ void loop() {
     if (separator != 0)
     {
         // Actually split the string in 2: replace ':' with 0
-        *separator = 0;
+        *separator = '0';
         int speed = atoi(command);
+        Serial.println(speed);
         ++separator;
         int angle = atoi(separator);
+        Serial.println(angle);
         drive(speed, angle);
-     } 
-   }
+    } 
+  }
+  
 }
 
 //Move the two corresponding motors forward
 void drive(int speed, int angle){
-  analogWrite(enableLeft, (int) (speed - angle* (1.16 - potValue)));
-  analogWrite(enableRight, (int) (speed + angle* (1.16 + potValue)));
+  //Serial.println(speed - angle* (1.16 - potValue));
+  //Serial.println(speed + angle* (1.16 + potValue));
+  analogWrite(enableLeft, speed + speed/128 * (angle * (1.16 + potValue)));
+  analogWrite(enableRight, speed - speed/128 * (angle* (1.16 - potValue)));
 }
