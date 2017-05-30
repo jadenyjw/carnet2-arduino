@@ -1,6 +1,6 @@
 
 #include <SoftwareSerial.h>
-#define INPUT_SIZE 7
+#define INPUT_SIZE 9
 
 //Declare variables for L293D 
 int enableLeft = 10;
@@ -45,7 +45,7 @@ void setup() {
 
 void loop() {
 
-    char input[INPUT_SIZE + 1];
+    char input[INPUT_SIZE];
     byte size = mySerial.readBytes(input, INPUT_SIZE);
     // Add the final 0 to end the C string
     input[size] = 0;
