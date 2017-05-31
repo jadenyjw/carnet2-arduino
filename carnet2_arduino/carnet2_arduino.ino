@@ -55,24 +55,25 @@ void loop() {
     
     // Split the command in two values
     char* separator = strchr(input, ':');
+ 
     if (separator != 0)
     {
         // Actually split the string in 2: replace ':' with 0
         *separator = 0;
         int speed = atoi(command);
-        Serial.println(speed);
         ++separator;
         int angle = atoi(separator);
-        Serial.println(angle);
+        
         drive(speed, angle);
+
      }
 }
 
 //Move the two corresponding motors forward
 void drive(int speed, int angle){
 
-  analogWrite(enableLeft, speed + speed/128 * (angle * (1.16 + potValue)));
-  analogWrite(enableRight, speed - speed/128 * (angle* (1.16 - potValue)));
+  analogWrite(enableLeft, speed + speed/250 * angle * (2.7678 + potValue));
+  analogWrite(enableRight, speed - speed/250 * angle* (2.7678 - potValue));
   //analogWrite(enableRight, 255);
   //analogWrite(enableLeft, 255);
 }
