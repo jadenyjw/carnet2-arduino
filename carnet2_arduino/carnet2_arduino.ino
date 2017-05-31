@@ -71,9 +71,23 @@ void loop() {
 
 //Move the two corresponding motors forward
 void drive(int speed, int angle){
-
-  analogWrite(enableLeft, speed + speed/250 * angle * (2.7678 + potValue));
-  analogWrite(enableRight, speed - speed/250 * angle* (2.7678 - potValue));
+  
+  if (angle == 0)
+  {
+     analogWrite(enableLeft, speed);
+     analogWrite(enableRight, speed);
+  }
+  else if (angle > 0)
+  {
+     analogWrite(enableLeft, speed);
+     analogWrite(enableRight, speed - speed/250 * angle* (1.4 - potValue));
+  }
+  else
+  {
+    analogWrite(enableLeft, speed + speed/250 * angle * (1.4 + potValue));
+    analogWrite(enableRight, speed);
+  }
+ 
   //analogWrite(enableRight, 255);
   //analogWrite(enableLeft, 255);
 }
