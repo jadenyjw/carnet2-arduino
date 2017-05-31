@@ -66,8 +66,8 @@ void loop() {
         }
         ++separator;
         int angle = atoi(separator);
-        if(angle >= 100 || angle <= -100){
-          angle = angle/10;
+        if(angle > 90 || angle < -90){
+          angle = angle/abs(angle) * 90;
         }
         drive(speed, angle);
 
@@ -85,11 +85,11 @@ void drive(int speed, int angle){
     else if (angle > 0)
     {
       analogWrite(enableLeft, speed);
-      analogWrite(enableRight, speed - speed/250 * angle* (1.4 - potValue));
+      analogWrite(enableRight, speed - speed/255 * angle* (1.4 - potValue));
     }
     else
     {
-      analogWrite(enableLeft, speed + speed/250 * angle * (1.4 + potValue));
+      analogWrite(enableLeft, speed + speed/255 * angle * (1.4 + potValue));
       analogWrite(enableRight, speed);
     }
     savedSpeed = speed;
