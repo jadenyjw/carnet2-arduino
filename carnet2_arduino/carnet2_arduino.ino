@@ -9,9 +9,9 @@ int leftA = 8;
 int leftB = 9;
 int rightA = 12;
 int rightB = 13;
-
 int potentiometer = A2;
-  
+int savedAngle;
+int savedSpeed;  
 double potValue = 0.0;
 
 //Setup software serial
@@ -61,9 +61,14 @@ void loop() {
         // Actually split the string in 2: replace ':' with 0
         *separator = 0;
         int speed = atoi(command);
+        if(speed >= 1000){
+          speed = speed / 10;
+        }
         ++separator;
         int angle = atoi(separator);
-        
+        if(angle >= 100 || angle <= -100){
+          angle = angle/10;
+        }
         drive(speed, angle);
 
      }
@@ -71,22 +76,26 @@ void loop() {
 
 //Move the two corresponding motors forward
 void drive(int speed, int angle){
+  if(savedSpeed != speed || savedAngle != angle){
+    if (angle == 0)
+    {
+      analogWrite(enableLeft, speed);
+      analogWrite(enableRight, speed);
+    }
+    else if (angle > 0)
+    {
+      analogWrite(enableLeft, speed);
+      analogWrite(enableRight, speed - speed/250 * angle* (1.4 - potValue));
+    }
+    else
+    {
+      analogWrite(enableLeft, speed + speed/250 * angle * (1.4 + potValue));
+      analogWrite(enableRight, speed);
+    }
+    savedSpeed = speed;
+    savedAngle = angle;
+  }
   
-  if (angle == 0)
-  {
-     analogWrite(enableLeft, speed);
-     analogWrite(enableRight, speed);
-  }
-  else if (angle > 0)
-  {
-     analogWrite(enableLeft, speed);
-     analogWrite(enableRight, speed - speed/250 * angle* (1.4 - potValue));
-  }
-  else
-  {
-    analogWrite(enableLeft, speed + speed/250 * angle * (1.4 + potValue));
-    analogWrite(enableRight, speed);
-  }
  
   //analogWrite(enableRight, 255);
   //analogWrite(enableLeft, 255);
