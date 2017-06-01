@@ -20,9 +20,9 @@ void setup() {
   
     //Start serial interface
     Serial.begin(115200);
-    Serial.setTimeout(10);
+    Serial.setTimeout(1);
     mySerial.begin(115200);
-    mySerial.setTimeout(10);
+    mySerial.setTimeout(1);
     
     //Enable pins for motors
     pinMode(enableLeft, OUTPUT);
@@ -45,6 +45,7 @@ void setup() {
 
 void loop() {
 
+  if(mySerial.available()){
     char input[INPUT_SIZE];
     byte size = mySerial.readBytes(input, INPUT_SIZE);
     // Add the final 0 to end the C string
@@ -67,29 +68,34 @@ void loop() {
         ++separator;
         int angle = atoi(separator);
         if(angle > 90 || angle < -90){
-          angle = angle/abs(angle) * 90;
+          angle = angle/10;
         }
         drive(speed, angle);
 
      }
+  }
 }
 
 //Move the two corresponding motors forward
 void drive(int speed, int angle){
+  
   if(savedSpeed != speed || savedAngle != angle){
-    if (angle == 0)
+    Serial.println(speed);
+    Serial.println(angle); 
+  
+    if (angle == 0 && speed > 0)
     {
-      analogWrite(enableLeft, speed);
-      analogWrite(enableRight, speed);
+      analogWrite(enableLeft, 255);
+      analogWrite(enableRight, 255);
     }
     else if (angle > 0)
     {
       analogWrite(enableLeft, speed);
-      analogWrite(enableRight, speed - speed/255 * angle* (1.4 - potValue));
+      analogWrite(enableRight, speed - speed/255 * angle* (2.0 - potValue));
     }
     else
     {
-      analogWrite(enableLeft, speed + speed/255 * angle * (1.4 + potValue));
+      analogWrite(enableLeft, speed + speed/255 * angle * (2.0 + potValue));
       analogWrite(enableRight, speed);
     }
     savedSpeed = speed;
