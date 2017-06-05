@@ -70,6 +70,7 @@ void loop() {
         if(angle > 90 || angle < -90){
           angle = angle/10;
         }
+       
         drive(speed, angle);
 
      }
@@ -80,8 +81,6 @@ void loop() {
 void drive(int speed, int angle){
   
   if(savedSpeed != speed || savedAngle != angle){
-    Serial.println(speed);
-    Serial.println(angle); 
   
     if (angle == 0 && speed > 0)
     {
@@ -91,15 +90,18 @@ void drive(int speed, int angle){
     else if (angle > 0)
     {
       analogWrite(enableLeft, speed);
-      analogWrite(enableRight, speed - speed/255 * angle* (2.0 - potValue));
+      analogWrite(enableRight, speed - speed/255 * angle* (2.1 - potValue));
+      Serial.println(speed - speed/255 * angle* (2.1 - potValue));
     }
     else
     {
-      analogWrite(enableLeft, speed + speed/255 * angle * (2.0 + potValue));
+      analogWrite(enableLeft, speed + speed/255 * angle * (2.1 + potValue));
       analogWrite(enableRight, speed);
+      Serial.println(speed + speed/255 * angle * (2.1 + potValue));
     }
     savedSpeed = speed;
     savedAngle = angle;
+ 
   }
   
  
