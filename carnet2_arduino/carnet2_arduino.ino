@@ -91,20 +91,15 @@ void drive(int speed, int angle){
     {
       analogWrite(enableLeft, speed);
       analogWrite(enableRight, speed - speed/255 * angle* (2.1 - potValue));
-      Serial.println(speed - speed/255 * angle* (2.1 - potValue));
     }
     else
     {
       analogWrite(enableLeft, speed + speed/255 * angle * (2.1 + potValue));
       analogWrite(enableRight, speed);
-      Serial.println(speed + speed/255 * angle * (2.1 + potValue));
     }
     savedSpeed = speed;
     savedAngle = angle;
  
   }
   
- 
-  //analogWrite(enableRight, 255);
-  //analogWrite(enableLeft, 255);
 }
