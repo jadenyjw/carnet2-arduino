@@ -87,15 +87,15 @@ void drive(int speed, int angle){
       analogWrite(enableLeft, 255);
       analogWrite(enableRight, 255);
     }
-    else if (angle > 0)
+    else if (angle < 0)
     {
-      analogWrite(enableLeft, speed);
-      analogWrite(enableRight, speed - speed/255 * angle* (2.1 - potValue));
+      analogWrite(enableLeft, 10);
+      analogWrite(enableRight, speed - speed/255 * angle* (2.0 - potValue));
     }
     else
     {
-      analogWrite(enableLeft, speed + speed/255 * angle * (2.1 + potValue));
-      analogWrite(enableRight, speed);
+      analogWrite(enableLeft, speed + speed/255 * angle * (2.0 + potValue));
+      analogWrite(enableRight, 10);
     }
     savedSpeed = speed;
     savedAngle = angle;
